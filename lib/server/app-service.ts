@@ -20,6 +20,7 @@ import {
   exercises as baseExerciseTemplates,
   initialState,
 } from "@/lib/mock-data";
+import { getNextProgramId } from "@/lib/programs";
 import type { TelegramUser } from "@/lib/telegram/validate-init-data";
 
 type Db = ReturnType<typeof getDb>;
@@ -410,10 +411,28 @@ async function performAction(db: Db, user: UserRow, action: AppAction): Promise<
         .from(workoutResults)
         .where(eq(workoutResults.workoutId, active.id));
       if (Number(count) < 1) throw new AppServiceError("Сохраните результат хотя бы одного упражнения.");
-      await db
+      const ownedPrograms = await db
+        .select({ id: programs.id })
+        .from(programs)
+        .where(eq(programs.ownerId, user.id))
+        .orderBy(asc(programs.position), asc(programs.createdAt));
+      const nextProgramId = getNextProgramId(
+        ownedPrograms,
+        active.programId ?? user.selectedProgramId,
+      );
+      const completeWorkout = db
         .update(workouts)
         .set({ status: "completed", finishedAt: new Date() })
         .where(and(eq(workouts.id, active.id), eq(workouts.userId, user.id)));
+
+      if (nextProgramId) {
+        await db.batch([
+          completeWorkout,
+          db.update(users).set({ selectedProgramId: nextProgramId }).where(eq(users.id, user.id)),
+        ]);
+      } else {
+        await completeWorkout;
+      }
       return;
     }
     case "cancel-workout": {

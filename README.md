@@ -106,7 +106,9 @@ npm run db:migrate
 npm run telegram:setup
 ```
 
-Команда использует `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` и `NEXT_PUBLIC_APP_URL`, настраивает webhook `/api/telegram/webhook` и кнопку «Открыть дневник». В BotFather также можно назначить приложение как Main Mini App.
+Команда использует `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` и `NEXT_PUBLIC_APP_URL`, настраивает webhook `/api/telegram/webhook` и кнопку «Открыть дневник».
+
+Чтобы у бота появилась заметная кнопка «Открыть» в профиле и списке приложений, включите Main Mini App вручную: `@BotFather` → `/mybots` → бот → `Bot Settings` → `Configure Mini App` → `Enable Mini App`, затем укажите `NEXT_PUBLIC_APP_URL`.
 
 ## Безопасность
 

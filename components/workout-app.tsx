@@ -7,7 +7,7 @@ import { AppApiError, initializeTelegramApp, requestAppState } from "@/lib/clien
 import type { Exercise, ExerciseResult, Program, StoredAppState, Workout } from "@/lib/domain";
 import { hasSavedExerciseResult } from "@/lib/exercises";
 import { exercises, initialState, legacyExerciseNames } from "@/lib/mock-data";
-import { removeProgram } from "@/lib/programs";
+import { getNextProgramId, removeProgram } from "@/lib/programs";
 import { isDemoMode } from "@/lib/runtime-mode";
 import {
   canFinishWorkout,
@@ -297,6 +297,8 @@ export function WorkoutApp() {
       ...current,
       activeWorkout: undefined,
       history: [completed, ...current.history],
+      selectedProgramId: getNextProgramId(current.programs, current.selectedProgramId)
+        ?? current.selectedProgramId,
     }));
     setDrafts({});
     setTab("history");

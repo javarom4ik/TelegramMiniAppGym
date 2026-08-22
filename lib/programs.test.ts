@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Program } from "./domain";
-import { removeProgram } from "./programs";
+import { getNextProgramId, removeProgram } from "./programs";
 
 const programs: Program[] = [
   { id: "one", name: "Тренировка № 1", exerciseIds: [] },
@@ -20,5 +20,20 @@ describe("removeProgram", () => {
       programs: [],
       selectedProgramId: "",
     });
+  });
+});
+
+describe("getNextProgramId", () => {
+  it("selects the program after the completed one", () => {
+    expect(getNextProgramId(programs, "one")).toBe("two");
+  });
+
+  it("continues from the last program to the first one", () => {
+    expect(getNextProgramId(programs, "two")).toBe("one");
+  });
+
+  it("handles an empty or changed program list", () => {
+    expect(getNextProgramId([], "one")).toBeUndefined();
+    expect(getNextProgramId(programs, "deleted")).toBe("one");
   });
 });
