@@ -8,6 +8,7 @@ import type { Exercise, ExerciseResult, Program, StoredAppState, Workout } from 
 import { hasSavedExerciseResult } from "@/lib/exercises";
 import { exercises, initialState, legacyExerciseNames } from "@/lib/mock-data";
 import { removeProgram } from "@/lib/programs";
+import { isDemoMode } from "@/lib/runtime-mode";
 import {
   canFinishWorkout,
   formatDuration,
@@ -28,7 +29,7 @@ import {
 } from "./icons";
 
 const STORAGE_KEY = "gym-tracker-prototype-v1";
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE !== "false";
+const DEMO_MODE = isDemoMode(process.env.NODE_ENV, process.env.NEXT_PUBLIC_DEMO_MODE);
 const MUSCLE_GROUP_ORDER = new Map<string, number>(MUSCLE_GROUPS.map((group, index) => [group, index]));
 type Tab = "workout" | "history" | "program";
 type Draft = { weight: string; reps: string };

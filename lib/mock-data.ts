@@ -1,4 +1,4 @@
-import type { Exercise, StoredAppState, Workout } from "./domain";
+import type { Exercise, StoredAppState } from "./domain";
 
 export const exercises: Exercise[] = [
   { id: "machine-lateral-raise", name: "Отведение рук в стороны в тренажёре", muscleGroup: "Плечи", position: 1 },
@@ -26,24 +26,6 @@ export const legacyExerciseNames: Record<string, string> = {
   "triceps-pushdown": "Разгибание рук на блоке",
   "overhead-extension": "Разгибание из-за головы",
   "dumbbell-curl": "Сгибание рук с гантелями",
-};
-
-const workout = (
-  id: string,
-  daysAgo: number,
-  results: Workout["results"],
-): Workout => {
-  const finishedAt = new Date(Date.now() - daysAgo * 86_400_000);
-  finishedAt.setHours(20, 15, 0, 0);
-  const startedAt = new Date(finishedAt.getTime() - 68 * 60_000);
-  return {
-    id,
-    programName: "Тренировка № 1",
-    startedAt: startedAt.toISOString(),
-    finishedAt: finishedAt.toISOString(),
-    status: "completed",
-    results,
-  };
 };
 
 export const initialState: StoredAppState = {
@@ -88,22 +70,5 @@ export const initialState: StoredAppState = {
       ],
     },
   ],
-  history: [
-    workout("workout-1", 4, [
-      { exerciseId: "bench-press", weight: 95, reps: 8 },
-      { exerciseId: "hammer-chest-press", weight: 70, reps: 10 },
-      { exerciseId: "seated-cable-row", weight: 65, reps: 10 },
-      { exerciseId: "hammer-curl", weight: 18, reps: 10 },
-    ]),
-    workout("workout-2", 11, [
-      { exerciseId: "bench-press", weight: 100, reps: 5 },
-      { exerciseId: "lat-pulldown", weight: 70, reps: 10 },
-      { exerciseId: "leg-press", weight: 180, reps: 10 },
-    ]),
-    workout("workout-3", 18, [
-      { exerciseId: "machine-lateral-raise", weight: 35, reps: 12 },
-      { exerciseId: "lever-row", weight: 60, reps: 10 },
-      { exerciseId: "cable-biceps-curl", weight: 30, reps: 12 },
-    ]),
-  ],
+  history: [],
 };
