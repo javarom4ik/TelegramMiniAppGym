@@ -5,6 +5,9 @@ type TelegramWebApp = {
   initData: string;
   ready: () => void;
   expand: () => void;
+  requestFullscreen?: () => void;
+  setHeaderColor?: (color: string) => void;
+  setBackgroundColor?: (color: string) => void;
 };
 
 declare global {
@@ -15,13 +18,25 @@ declare global {
 
 export class AppApiError extends Error {}
 
+export function configureTelegramViewport(webApp: TelegramWebApp): void {
+  webApp.ready();
+  webApp.expand();
+  webApp.setHeaderColor?.("#f4f5f2");
+  webApp.setBackgroundColor?.("#f4f5f2");
+
+  try {
+    webApp.requestFullscreen?.();
+  } catch {
+    // Telegram clients older than Bot API 8.0 remain expanded without fullscreen.
+  }
+}
+
 export function initializeTelegramApp(): string {
   const webApp = window.Telegram?.WebApp;
   if (!webApp?.initData) {
     throw new AppApiError("Откройте дневник через кнопку Telegram-бота.");
   }
-  webApp.ready();
-  webApp.expand();
+  configureTelegramViewport(webApp);
   return webApp.initData;
 }
 
